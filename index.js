@@ -1,5 +1,9 @@
 const express = require('express');
+const morgan = require('morgan');
 const app = express();
+
+// logging
+app.use(morgan('dev'));
 
 // static content
 app.use(express.static('public'));

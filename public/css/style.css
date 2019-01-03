@@ -4,7 +4,7 @@
   font-weight: bold;
   background: #FFCC27;
   padding: 1em;
-  font-size: 1.5em;
+  font-size: 2em;
   text-align: center;
 }
 
@@ -13,6 +13,18 @@
 }
 .navbar .nav-item {
   text-transform: uppercase;
+  margin-top: auto;
+  margin-bottom: auto;
+}
+#book-now-button {
+  text-transform: uppercase;
+  background-color: #FFCC27;
+  padding: 1em 2em;
+  display: inline;
+  border: 0;
+}
+#book-now-button:hover {
+  cursor: pointer;
 }
 
 .carousel-caption {
@@ -24,8 +36,7 @@
 .carousel-caption p { color: #FFF; font-size: 1.1em; }
 
 .rtd-buttons button {
-  font-variant: all-small-caps;
-  text-transform: uppercase;
+  font-variant: small-caps;
   background: rgba(0, 0, 0, 50%);
   color: #FFF;
   border: 2px solid #FFCC27;
