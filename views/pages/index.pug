@@ -1,0 +1,55 @@
+extends ../layout.pug
+
+block content
+    div#carouselExampleIndicators.carousel.slide(data-ride="carousel")
+        ol.carousel-indicators
+            li(data-target="#carouselExampleIndicators", data-slide-to="0", class="active")
+            li(data-target="#carouselExampleIndicators", data-slide-to="1")
+            li(data-target="#carouselExampleIndicators", data-slide-to="2")
+            li(data-target="#carouselExampleIndicators", data-slide-to="3")
+            li(data-target="#carouselExampleIndicators", data-slide-to="4")
+        div.carousel-inner
+            div.carousel-item.active
+                img.d-block.w-100(src="/img/slide-1.jpg")
+                div.carousel-caption.d-none.d-md-block
+                    h5 Your Local Community Centre
+                    p  We are an activity-based hub in the heart of Chester-le-Street which aims to meet the needs and interests of the residents of the town…
+                    div.rtd-buttons
+                        a(href='/about-us')
+                            button Read More
+                        a(href='/about-us')
+                            button What's On
+            div.carousel-item
+                img.d-block.w-100(src="/img/slide-2.jpg")
+                div.carousel-caption.d-none.d-md-block
+                    h5 Environments to enhance learning experiences
+                    p  With a vast amount of variety, Park View Community Centre can provide a room to suit your requirements…
+                    div.rtd-buttons
+                        a(href='/facilities/class-rooms')
+                            button Class Rooms
+            div.carousel-item
+                img.d-block.w-100(src="/img/slide-3.jpg")
+                div.carousel-caption.d-none.d-md-block
+                    h5 Traditional Theatre
+                    p  A unique place for performing with the best seats in the house!
+                    div.rtd-buttons
+                        a(href='/facilities/theatre')
+                            button Theatre
+            div.carousel-item
+                img.d-block.w-100(src="/img/slide-4.jpg")
+                div.carousel-caption.d-none.d-md-block
+                    h5 Quality Sports Facilities for all
+                    div.rtd-buttons
+                        a(href='/facilities/sports-hall')
+                            button Sports Hall
+                        a(href='/facilities/astro-turf')
+                            button Astro Turf
+            div.carousel-item
+                img.d-block.w-100(src="/img/slide-5.jpg")
+                div.carousel-caption.d-none.d-md-block
+                    h5 Book your child's Birthday Party
+                    div.rtd-buttons
+                        a(href='/childrens-birthday-parties-chester-le-street')
+                            button More Info
+    h1.banner
+        | Welcome to Park View Community Centre, in the heart of Chester-le-Street

@@ -1,0 +1,39 @@
+.banner {
+  text-transform: uppercase;
+  font-variant: all-small-caps;
+  font-weight: bold;
+  background: #FFCC27;
+  padding: 1em;
+  font-size: 1.5em;
+  text-align: center;
+}
+
+.navbar {
+  border-top: 5px solid #FFCC27;
+}
+.navbar .nav-item {
+  text-transform: uppercase;
+}
+
+.carousel-caption {
+  background: rgba(0, 0, 0, 60%);
+  border-left: 5px solid #FFCC27;
+}
+
+.carousel-caption h5 { text-transform: uppercase; color: #FFF; font-size: 2em; }
+.carousel-caption p { color: #FFF; font-size: 1.1em; }
+
+.rtd-buttons button {
+  font-variant: all-small-caps;
+  text-transform: uppercase;
+  background: rgba(0, 0, 0, 50%);
+  color: #FFF;
+  border: 2px solid #FFCC27;
+  padding: 0.5em 2em;
+  margin: 0 1em;
+}
+
+.rtd-buttons button:hover {
+  cursor: pointer;
+  background: rgba(0, 0, 0, 80%);
+}
