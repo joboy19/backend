@@ -1,0 +1,21 @@
+extends ../layout.pug
+
+block content
+    form#contact-us(method="POST")
+        p Your Name
+        input(type="text", name="name")
+        p Your Email
+        input(type="email", name="email")
+        p Your Telephone
+        input(type="tel", name="telephone")
+        p How Can We Help?
+        textarea(name="query")
+        input(type="submit", value="Send")
+
+    script.
+        $('#contact-us').submit(function(e) {
+            var email = $(this).find('[name=email]').val().trim();
+            if (email.length === 0) {
+                e.preventDefault();
+            }
+        });
