@@ -1,6 +1,8 @@
 extends ../layout.pug
 
-script(src='/js/fb-embed.js')
+block vars
+    -var title="Home"
+
 block content
     div#carouselExampleIndicators.carousel.slide(data-ride="carousel")
         ol.carousel-indicators
@@ -66,3 +68,4 @@ block content
                         blockquote(cite="https://www.facebook.com/parkviewcommunitycentre" class="fb-xfbml-parse-ignore")
                             a(href="https://www.facebook.com/parkviewcommunitycentre")
                                 Park View Community Centre
+    script(src='/js/fb-embed.js')
