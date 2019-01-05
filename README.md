@@ -4,6 +4,9 @@ Red Thunder backend.
 
 ## Running
 
+Google Calendar library requires the `keys/privatekey.json` file. You should
+get this off the group chat.
+
 Sending emails require the password to `durhamredthunder2018@gmail.com` to be
 stored in the`RED_THUNDER_PASSWORD` environment variable. To do this on Linux:
 
