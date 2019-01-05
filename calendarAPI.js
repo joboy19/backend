@@ -6,19 +6,18 @@ const CALENDAR_ID  = 'durhamredthunder2018@gmail.com'; // main calendar
 
 function connect() {
     let jwtClient = new google.auth.JWT(
-    privatekey.client_email,
-    null,
-    privatekey.private_key,
-    ['https://www.googleapis.com/auth/calendar']);
+        privatekey.client_email,
+        null,
+        privatekey.private_key,
+        ['https://www.googleapis.com/auth/calendar']
+    );
 
     jwtClient.authorize((err, tokens) => {
-    if (err) {
-        console.log(err);
-        return;
-    }
-    else {
+        if (err) {
+            console.log(err);
+            return;
+        }
         console.log('API access authenticated');
-    }
     });
 
     return jwtClient;
@@ -26,21 +25,21 @@ function connect() {
 
 //auth is the jwtClient object returned by connect()
 //resource can have start, end, summary, description and id
-function addEvent(auth, resource) {
-   addSlot(CALENDAR_ID, auth, resource); 
+function addEvent(auth, resource, callback) {
+    addSlot(CALENDAR_ID, auth, resource, callback);
 }
 
-function addLock(auth, resource) {
-    addSlot(PAYPAL_ID, auth, resource);
+function addLock(auth, resource, callback) {
+    addSlot(PAYPAL_ID, auth, resource, callback);
 }
 
-function addSlot(calendarId, auth, resource) {
+function addSlot(calendarId, auth, resource, callback) {
     calendar.events.insert({
-        calendarId: calendarId,
-        auth: auth,
-        resource: resource
+        calendarId,
+        auth,
+        resource,
     }, (err, res) => {
-        if (err) return console.log(err);
+        if (err) callback(err);
     });
 }
 
@@ -54,9 +53,9 @@ function deleteEvent(auth, resource, callback) {
 
 function deleteSlot(calendarId, auth, resource, callback) {
     calendar.events.delete({
-        calendarId: calendarId,
-        auth: auth,
-        resource: resource
+        calendarId,
+        auth,
+        resource,
     }, (err, res) => {
         if (err) callback(err);
     });
@@ -69,7 +68,7 @@ function eventClash(auth, resource, callback) {
 function lockClash(auth, resource, callback) {
     checkBusy(PAYPAL_ID, auth, resource, callback);
 }
-    
+
 function checkBusy(calendarId, auth, resource, callback) {
     calendar.events.list({
         calendarId: calendarId,
