@@ -26,21 +26,21 @@ function connect() {
 
 //auth is the jwtClient object returned by connect()
 //resource can have start, end, summary, description and id
-function addEvent(auth, resource, callback) {
-   addSlot(CALENDAR_ID, auth, resource, callback); 
+function addEvent(auth, resource) {
+   addSlot(CALENDAR_ID, auth, resource); 
 }
 
-function addLock(auth, resource, callback) {
-    addSlot(PAYPAL_ID, auth, resource, callback);
+function addLock(auth, resource) {
+    addSlot(PAYPAL_ID, auth, resource);
 }
 
-function addSlot(calendarId, auth, resource, callback) {
+function addSlot(calendarId, auth, resource) {
     calendar.events.insert({
         calendarId: calendarId,
         auth: auth,
         resource: resource
     }, (err, res) => {
-        callback(err);
+        if (err) return console.log(err);
     });
 }
 
@@ -58,7 +58,39 @@ function deleteSlot(calendarId, auth, resource, callback) {
         auth: auth,
         resource: resource
     }, (err, res) => {
-        callback(err);
+        if (err) callback(err);
+    });
+}
+
+function eventClash(auth, resource, callback) {
+    checkBusy(CALENDAR_ID, auth, resource, callback);
+}
+
+function lockClash(auth, resource, callback) {
+    checkBusy(PAYPAL_ID, auth, resource, callback);
+}
+    
+function checkBusy(calendarId, auth, resource, callback) {
+    calendar.events.list({
+        calendarId: calendarId,
+        auth: auth,
+        timeMin: resource.start, // lower bound for end times
+        timeMax: resource.end // upper bound for start times
+    }, (err, res) => {
+        if (err) {
+            callback(null, err);
+            return;
+        }
+        else {
+            let events = res.data.items;
+            for (let i=0; i<events.length; i++) {
+                if (events[i].summary == resource.summary) {
+                    callback(true);
+                    return;
+                }
+            }
+            callback(false);
+        }
     });
 }
 
@@ -67,17 +99,20 @@ function demo() {
     let resource = {
         start: {dateTime: '2019-01-10T14:00:00+01:00', timeZone: 'Europe/London'},
         end: {dateTime: '2019-01-10T16:00:00+01:00', timeZone: 'Europe/London'},
-        summary: 'the location',
+        summary: 'a venue',
         description: 'the person who booked'
     }
     addEvent(jwtClient, resource, (err) => {
-        if (err) console.log(err);
+        console.log(err);
     });
-    /*
-    addLock(jwtClient, resource, (err) => {
-        if (err) console.log(err);
+    eventClash(jwtClient, resource, (clash, err) => {
+        if (err) {
+            console.log(err);
+        }
+        else {
+            if (clash) console.log('This event clashes');
+        }
     });
-    */
 }
 
 module.exports.demo = demo;
