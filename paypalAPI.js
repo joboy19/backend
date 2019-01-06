@@ -11,9 +11,6 @@ function create_payment(name, price, callback) {
     return paypal.payment.create({
         intent: 'sale',
         payer: {payment_method: 'paypal'},
-        // when payment is completed or cancelled we can get acccess to the payment
-        // in the query parameters. It should look something like:
-        //    ?paymentId=PAY-90509644KJ4158803LQY664I&token=EC-8NK187215M972090U&PayerID=MR4YPCKUDMLU2
         redirect_urls: {
             return_url: 'http://localhost:8080/paypal/ok',
             cancel_url: 'http://localhost:8080/paypal/cancel',
