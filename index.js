@@ -23,4 +23,5 @@ render_page('/contact-us', 'contact-us');
 render_page('/calendar', 'testcalendar');
 
 app.use('/contact-us', require('./routes/contact-us'));
+app.use('/paypal', require('./routes/paypal'));
 app.listen(8080, () => {});

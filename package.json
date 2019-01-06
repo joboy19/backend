@@ -10,6 +10,7 @@
     "googleapis": "^36.0.0",
     "morgan": "^1.9.1",
     "nodemailer": "^5.0.0",
+    "paypal-rest-sdk": "^1.8.1",
     "pug": "^2.0.3"
   }
 }
