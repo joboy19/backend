@@ -25,7 +25,7 @@ router.get('/ok', (req, res) => {
     }
 
     const today = moment().startOf('day');
-    calendar.lockClash(calendar.auth, {
+    calendar.findLock(calendar.auth, {
         start: utils.momentToCalendarDate(today),
         end:   utils.momentToCalendarDate(today.add(1, 'month')),
         predicate: (_, d) => d.token === token && d.payment_id == paymentId,
@@ -56,7 +56,7 @@ router.get('/ok', (req, res) => {
 
 router.get('/cancel', (req, res) => {
     // expect token
-    const {token} = res.query;
+    const {token} = req.query;
     if (!token) {
         res.status(403);
         res.end();
@@ -64,12 +64,16 @@ router.get('/cancel', (req, res) => {
     }
     // find + delete paypal lock from calendar
     const today = moment().startOf('day');
-    calendar.lockClash(calendar.auth, {
+    calendar.findLock(calendar.auth, {
         start: utils.momentToCalendarDate(today),
         end:   utils.momentToCalendarDate(today.add(1, 'month')),
         predicate: (_, d) => d.token === token,
     }, (event, err) => {
-        deleteLock(calendar.auth, event.id, (err) => console.error(err));
+        if (event) {
+            calendar.deleteLock(calendar.auth, event.id, (err) => console.error(err));
+        }
+        res.write("Payment cancelled");
+        res.end();
     });
 });
 

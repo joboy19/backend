@@ -66,7 +66,7 @@ function eventClash(auth, resource, callback) {
     checkBusy(CALENDAR_ID, auth, resource, callback);
 }
 
-function lockClash(auth, query, callback) {
+function findLock(auth, query, callback) {
     return calendar.events.list({
         calendarId: PAYPAL_ID,
         auth: auth,
@@ -133,7 +133,7 @@ function demo() {
 
 module.exports = {
     auth: connect(),
-    lockClash,
+    findLock,
     addLock,
     deleteLock,
 };
