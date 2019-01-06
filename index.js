@@ -18,7 +18,9 @@ function render_page(route, template) {
 }
 
 render_page('/', 'index');
+render_page('/about-us', 'about-us');
 render_page('/contact-us', 'contact-us');
+render_page('/calendar', 'testcalendar');
 
 app.use('/contact-us', require('./routes/contact-us'));
 app.listen(8080, () => {});
