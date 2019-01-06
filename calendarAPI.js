@@ -39,9 +39,7 @@ function addSlot(calendarId, auth, resource, callback) {
         calendarId,
         auth,
         resource,
-    }, (err, res) => {
-        if (err) callback(err);
-    });
+    }, callback);
 }
 
 function deleteLock(auth, eventId, callback) {
@@ -57,9 +55,7 @@ function deleteSlot(calendarId, auth, eventId, callback) {
         calendarId,
         auth,
         eventId,
-    }, (err, res) => {
-        if (err) callback(err);
-    });
+    }, callback);
 }
 
 function eventClash(auth, resource, callback) {
@@ -82,7 +78,7 @@ function findLock(auth, query, callback) {
             moment(event.updated).isAfter(timeout)
             && query.predicate(event, JSON.parse(event.description))
         );
-        callback(event, null);
+        callback(null, event);
     });
 }
 
@@ -94,45 +90,24 @@ function checkBusy(calendarId, auth, resource, callback) {
         timeMax: resource.end // upper bound for start times
     }, (err, res) => {
         if (err) {
-            callback(null, err);
+            callback(err, null);
             return;
-        }
-        else {
+        } else {
             let events = res.data.items;
             for (let i=0; i<events.length; i++) {
                 if (events[i].summary == resource.summary) {
-                    callback(true);
+                    callback(null, true);
                     return;
                 }
             }
-            callback(false);
-        }
-    });
-}
-
-function demo() {
-    let jwtClient = connect();
-    let resource = {
-        start: {dateTime: '2019-01-10T14:00:00+01:00', timeZone: 'Europe/London'},
-        end: {dateTime: '2019-01-10T16:00:00+01:00', timeZone: 'Europe/London'},
-        summary: 'a venue',
-        description: 'the person who booked'
-    }
-    addEvent(jwtClient, resource, (err) => {
-        console.log(err);
-    });
-    eventClash(jwtClient, resource, (clash, err) => {
-        if (err) {
-            console.log(err);
-        }
-        else {
-            if (clash) console.log('This event clashes');
+            callback(null, false);
         }
     });
 }
 
 module.exports = {
     auth: connect(),
+    PAYPAL_ID,
     findLock,
     addLock,
     deleteLock,

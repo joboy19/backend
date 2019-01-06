@@ -12,6 +12,10 @@ const utils = require('../utils.js');
 // Description: {
 //   "token": "...",
 //   "payment_id": "...",
+//   "details": {
+//     "name": "...",
+//     "phone_number": "..."
+//   }
 // }
 
 
@@ -29,7 +33,7 @@ router.get('/ok', (req, res) => {
         start: utils.momentToCalendarDate(today),
         end:   utils.momentToCalendarDate(today.add(1, 'month')),
         predicate: (_, d) => d.token === token && d.payment_id == paymentId,
-    }, (event, err) => {
+    }, (err, event) => {
         // make sure that the lock still exists and isn't
         // already deleted.
         if (!event) {
@@ -39,7 +43,7 @@ router.get('/ok', (req, res) => {
         }
         paypal.execute_payment(paymentId, PayerID, (err, payment) => {
             // delete paypal lock from calendar
-            calendar.deleteLock(calendar.auth, event.id, (err) => console.error(err));
+            calendar.deleteLock(calendar.auth, event.id, (err) => err && console.error(err));
             if (err) {
                 console.error(err);
                 res.status(500);
@@ -68,9 +72,9 @@ router.get('/cancel', (req, res) => {
         start: utils.momentToCalendarDate(today),
         end:   utils.momentToCalendarDate(today.add(1, 'month')),
         predicate: (_, d) => d.token === token,
-    }, (event, err) => {
+    }, (err, event) => {
         if (event) {
-            calendar.deleteLock(calendar.auth, event.id, (err) => console.error(err));
+            calendar.deleteLock(calendar.auth, event.id, (err) => err && console.error(err));
         }
         res.write("Payment cancelled");
         res.end();
@@ -90,14 +94,24 @@ router.get('/payment-demo', (req, res) => {
         const desc = JSON.stringify({
             token: url.parse(link.href, {parseQueryString: true}).query.token,
             payment_id: payment.id,
+            details: {
+                name: "anikan",
+                email: "anikan@tatooine.org",
+            }
         });
         calendar.addLock(calendar.auth, {
             start:   utils.momentToCalendarDate(moment()),
             end:     utils.momentToCalendarDate(moment().add(2, 'hours')),
             summary: 'venue',
             description: desc,
-        }, (err) => console.log(err))
-        res.redirect(link.href);
+        }, (err) => {
+            if (err) {
+                console.error(err);
+                res.status(500);
+                return;
+            }
+            res.redirect(link.href);
+        })
     });
 });
 
