@@ -1,4 +1,5 @@
 const {google} = require('googleapis');
+const moment = require('moment');
 const calendar = google.calendar('v3');
 const privatekey = require('./keys/privatekey.json');
 const PAYPAL_ID = '1mlpohc4b7q3ujqvpndg27vna4@group.calendar.google.com'; // paypal calendar
@@ -43,19 +44,19 @@ function addSlot(calendarId, auth, resource, callback) {
     });
 }
 
-function deleteLock(auth, resource, callback) {
-    deleteSlot(PAYPAL_ID, auth, resource, callback);
+function deleteLock(auth, eventId, callback) {
+    deleteSlot(PAYPAL_ID, auth, eventId, callback);
 }
 
-function deleteEvent(auth, resource, callback) {
-    deleteSlot(CALENDAR_ID, auth, resource, callback);
+function deleteEvent(auth, eventId, callback) {
+    deleteSlot(CALENDAR_ID, auth, eventId, callback);
 }
 
-function deleteSlot(calendarId, auth, resource, callback) {
+function deleteSlot(calendarId, auth, eventId, callback) {
     calendar.events.delete({
         calendarId,
         auth,
-        resource,
+        eventId,
     }, (err, res) => {
         if (err) callback(err);
     });
@@ -65,8 +66,24 @@ function eventClash(auth, resource, callback) {
     checkBusy(CALENDAR_ID, auth, resource, callback);
 }
 
-function lockClash(auth, resource, callback) {
-    checkBusy(PAYPAL_ID, auth, resource, callback);
+function lockClash(auth, query, callback) {
+    return calendar.events.list({
+        calendarId: PAYPAL_ID,
+        auth: auth,
+        timeMin: query.start,
+        timeMax: query.end,
+    }, (err, res) => {
+        if (err) {
+            return callback(null, err);
+        }
+        const timeout = moment().subtract(15, 'minutes');
+        const events = res.data.items;
+        const event = events.find((event) =>
+            moment(event.updated).isAfter(timeout)
+            && query.predicate(event, JSON.parse(event.description))
+        );
+        callback(event, null);
+    });
 }
 
 function checkBusy(calendarId, auth, resource, callback) {
@@ -114,4 +131,9 @@ function demo() {
     });
 }
 
-module.exports.demo = demo;
+module.exports = {
+    auth: connect(),
+    lockClash,
+    addLock,
+    deleteLock,
+};
