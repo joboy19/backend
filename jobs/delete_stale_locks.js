@@ -1,7 +1,7 @@
 const {google} = require('googleapis');
 const calendar = google.calendar('v3');
 const moment = require('moment');
-const {auth, PAYPAL_ID} = require('../calendarAPI');
+const {auth, PAYPAL_ID, deleteLock} = require('../calendarAPI');
 const utils = require('../utils');
 
 
@@ -21,8 +21,9 @@ function task() {
             const stale = events.filter(event => moment(event.updated).isBefore(timeout));
             let done = stale.length;
             stale.forEach(event =>
-                calendar.events.delete({calendarId: PAYPAL_ID, auth, eventId: event.id}, () => {
+                deleteLock(auth, event.id, (err) => {
                     done--;
+                    if (err) console.error(err);
                     if (done == 0) {
                         resolve();
                     }
