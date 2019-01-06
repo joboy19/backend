@@ -37,15 +37,15 @@ router.get('/ok', (req, res) => {
             res.end();
             return;
         }
-        console.log(event);
         paypal.execute_payment(paymentId, PayerID, (err, payment) => {
             // delete paypal lock from calendar
-            calendar.deleteLock(calendar.auth, event.id, (err) => console.error(error));
+            calendar.deleteLock(calendar.auth, event.id, (err) => console.error(err));
             if (err) {
                 console.error(err);
                 res.status(500);
                 return;
             }
+            // TODO: add to calendar here
             console.log(payment);
             res.write("Payment approved.");
             res.end();
@@ -56,12 +56,21 @@ router.get('/ok', (req, res) => {
 
 router.get('/cancel', (req, res) => {
     // expect token
-    res.write(`
-Payment cancelled.
-Token:   ${req.query.token}
-    `);
-    res.end();
+    const {token} = res.query;
+    if (!token) {
+        res.status(403);
+        res.end();
+        return;
+    }
     // find + delete paypal lock from calendar
+    const today = moment().startOf('day');
+    calendar.lockClash(calendar.auth, {
+        start: utils.momentToCalendarDate(today),
+        end:   utils.momentToCalendarDate(today.add(1, 'month')),
+        predicate: (_, d) => d.token === token,
+    }, (event, err) => {
+        deleteLock(calendar.auth, event.id, (err) => console.error(err));
+    });
 });
 
 
