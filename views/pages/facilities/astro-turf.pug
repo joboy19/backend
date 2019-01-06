@@ -1,0 +1,10 @@
+extends ../../layout.pug
+
+block vars
+    - var title = "Astro Turf"
+    - var images = ["/img/facilities/astro%20turf/1.jpg", "/img/facilities/astro%20turf/2.jpg", "/img/facilities/astro%20turf/3.jpg"]
+    - var description = "The multi-use games area has been newly refurbished and is a high class, floodlit facility available until 9pm each night.  It can be hired as a full or half pitch, depending upon the age group of user or the activity required. Because it is composed of synthetic carpet, it can be used for a host of sports, including football, netball and tennis. Free parking is available on site."
+    - var availability = {Monday: "6:00 pm – 9:30 pm", Tuesday: "6:00 pm – 9:30 pm", Wednesday: "6:00 pm – 9:30 pm", Thursday: "6:00 pm – 9:30 pm", Friday: "6:00 pm – 9:30 pm", Saturday: "10:00 am – 4:30 pm", Sunday: "10:00 am – 12:30 pm"}
+
+block content
+    include ../../includes/facility.pug
