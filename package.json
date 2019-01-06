@@ -8,6 +8,7 @@
   "dependencies": {
     "express": "^4.16.4",
     "googleapis": "^36.0.0",
+    "moment": "^2.23.0",
     "morgan": "^1.9.1",
     "nodemailer": "^5.0.0",
     "paypal-rest-sdk": "^1.8.1",
