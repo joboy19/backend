@@ -22,9 +22,10 @@ div.container
                 | #{description}
             a(href="#" class="btn btn-primary btn-lg active" role="button")
                 | book now
-            div
-                h3 Availability:
-                each key, val in availability
-                    p!= '<strong>' + key + '</strong>' + ': ' + val
+            if (availability)
+                div
+                    h3 Availability:
+                    each key, val in availability
+                        p!= '<strong>' + key + '</strong>' + ': ' + val
                 
 
