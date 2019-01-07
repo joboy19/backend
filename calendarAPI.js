@@ -58,50 +58,36 @@ function deleteSlot(calendarId, auth, eventId, callback) {
     }, callback);
 }
 
-function eventClash(auth, resource, callback) {
-    checkBusy(CALENDAR_ID, auth, resource, callback);
+
+function findEvent(auth, query, callback) {
+    return findFirst(CALENDAR_ID, auth, query, callback);
 }
 
+
 function findLock(auth, query, callback) {
+    const og = query.predicate;
+    const timeout = moment().subtract(15, 'minutes');
+    query.predicate = (event) =>
+        moment(event.updated).isAfter(timeout) &&
+            og(event, JSON.parse(event.description));
+    return findFirst(PAYPAL_ID, auth, query, callback);
+}
+
+
+function findFirst(calendarId, auth, query, callback) {
     return calendar.events.list({
-        calendarId: PAYPAL_ID,
-        auth: auth,
+        calendarId,
+        auth,
         timeMin: query.start,
         timeMax: query.end,
     }, (err, res) => {
         if (err) {
-            return callback(null, err);
-        }
-        const timeout = moment().subtract(15, 'minutes');
-        const events = res.data.items;
-        const event = events.find((event) =>
-            moment(event.updated).isAfter(timeout)
-            && query.predicate(event, JSON.parse(event.description))
-        );
-        callback(null, event);
-    });
-}
-
-function checkBusy(calendarId, auth, resource, callback) {
-    calendar.events.list({
-        calendarId: calendarId,
-        auth: auth,
-        timeMin: resource.start, // lower bound for end times
-        timeMax: resource.end // upper bound for start times
-    }, (err, res) => {
-        if (err) {
-            callback(err, null);
+            callback(null, err);
             return;
-        } else {
-            let events = res.data.items;
-            for (let i=0; i<events.length; i++) {
-                if (events[i].summary == resource.summary) {
-                    callback(null, true);
-                    return;
-                }
-            }
-            callback(null, false);
         }
+        const events = res.data.items;
+        const event = events.find((event) => query.predicate(event));
+        callback(null, event);
     });
 }
 
@@ -109,6 +95,7 @@ module.exports = {
     auth: connect(),
     PAYPAL_ID,
     findLock,
+    findEvent,
     addLock,
     deleteLock,
 };
