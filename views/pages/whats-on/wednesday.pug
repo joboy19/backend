@@ -1,0 +1,9 @@
+extends ../../layout.pug
+
+block vars
+    - var title = "Wednesday"
+    - var kids = [["Toddler Gymnastics", "childrens-gymnastics-coaching", "2:00pm-2:45pm"], ["Gymnastics", "childrens-gymnastics-coaching", "4:30pm-6:45pm"], ["St Cuthberts FC", "st-cuthberts-football-club-in-chester-le-street", "5:30pm-7:30pm"], ["Taekwon Do", "taekwon-do-in-chester-le-street", "7:00pm-8:00pm"]]
+    - var adults = [["Embroidery Club", "embroidery-stitch-club", "7:00pm-9:30pm"], ["Iyengar Yoga", "yoga-in-chester-le-street", "7:00pm-8:30pm"]]
+
+block content
+    include ../../includes/whats-on-day.pug
