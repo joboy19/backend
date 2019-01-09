@@ -1,0 +1,33 @@
+div.container
+    div.container
+        div.row
+            h1 What's On: #{title}
+                hr
+        div.row
+            h2 Children and Young People
+                hr
+
+        div.row
+            each page in kids 
+                div.col-md-4
+                    a(href='/whats-on/' + page[1])
+                        div(class='card mb-4 shadow-sm')
+                            img(class='card-img-top' src='../../img/whats-on/' +  page[1] + '/thumbnail.jpg')
+                            div.card-body
+                                p.card-text #{page[0]}
+                                p.card-text #{page[2]}
+
+        if (adults)
+            div.row
+                h2 Adult Activities
+                    hr
+
+            div.row
+                each page in adults
+                    div.col-md-4
+                        a(href='/whats-on/' + page[1])
+                            div(class='card mb-4 shadow-sm')
+                                img(class='card-img-top' src='../../img/whats-on/' +  page[1] + '/thumbnail.jpg')
+                                div.card-body
+                                    p.card-text #{page[0]}
+                                    p.card-text #{page[2]}
