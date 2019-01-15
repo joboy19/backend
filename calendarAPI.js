@@ -6,7 +6,7 @@ const PAYPAL_ID = '1mlpohc4b7q3ujqvpndg27vna4@group.calendar.google.com'; // pay
 
 
 const IDS = {
-    football_field: 'tur9s2qokdfi7rs2056o84hgms@group.calendar.google.com',
+    astro_turf: 'tur9s2qokdfi7rs2056o84hgms@group.calendar.google.com',
 };
 
 
@@ -66,7 +66,7 @@ function deleteSlot(calendarId, auth, eventId, callback) {
 
 
 function findLock(auth, query, callback) {
-    const og = query.predicate || () => true;
+    const og = query.predicate || (() => true);
     const timeout = moment().subtract(15, 'minutes');
     query.predicate = (event) =>
         moment(event.updated).isAfter(timeout) &&
@@ -76,7 +76,7 @@ function findLock(auth, query, callback) {
 
 
 function findFirst(calendarId, auth, query, callback) {
-    query.predicate = query.predicate || () => true;
+    query.predicate = query.predicate || (() => true);
     return calendar.events.list({
         calendarId,
         auth,

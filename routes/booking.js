@@ -3,6 +3,7 @@ const router = require('express').Router();
 const utils = require('../utils');
 const calendar = require('../calendarAPI');
 const paypal = require('../paypalAPI');
+const booking_info = require('../booking_info');
 
 
 router.post('/', (req, res) => {
@@ -21,7 +22,9 @@ router.post('/', (req, res) => {
         || !details.name
         || !details.phone_number
         || !venue
-        || !calendar.ids[venue]) {
+        || !calendar.ids[venue]
+        || !booking_info.within_closing_times(venue, start)
+        || !booking_info.within_closing_times(venue, end)) {
         res.status(400).end();
         return;
     }
