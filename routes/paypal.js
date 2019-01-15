@@ -1,4 +1,3 @@
-const url = require('url');
 const moment = require('moment');
 const router = require('express').Router();
 const paypal = require('../paypalAPI.js');
@@ -41,18 +40,28 @@ router.get('/ok', (req, res) => {
             res.end();
             return;
         }
+        console.log(event);
+        const desc = JSON.parse(event.description);
         paypal.execute_payment(paymentId, PayerID, (err, payment) => {
             // delete paypal lock from calendar
             calendar.deleteLock(calendar.auth, event.id, (err) => err && console.error(err));
-            if (err) {
-                console.error(err);
-                res.status(500);
-                return;
-            }
-            // TODO: add to calendar here
-            console.log(payment);
-            res.write("Payment approved.");
-            res.end();
+            if (err) throw err;
+            calendar.addSlot(
+                calendar.ids[event.summary],
+                calendar.auth,
+                {
+                    start: event.start,
+                    end:   event.end,
+                    summary: event.summary,
+                    description: `Name: ${desc.details.name}\nPhone Number: ${desc.details.phone_number}`
+                },
+                (err, resource) => {
+                    if (err) throw err;
+                    console.log(resource);
+                    res.write("Payment approved.");
+                    res.end();
+                }
+            );
         });
     });
 });
@@ -83,35 +92,25 @@ router.get('/cancel', (req, res) => {
 
 
 router.get('/payment-demo', (req, res) => {
-    paypal.create_payment("Sample Item Name", "10.00", (err, payment) => {
-        if (err) {
-            console.error(err);
-            res.status(500);
-            return;
-        }
+    paypal.create_payment("Sample Item Name", "10.00", (err, payment, info) => {
+        if (err) throw err;
         console.log(payment);
-        const link = payment.links.find(link => link.rel == 'approval_url');
-        const desc = JSON.stringify({
-            token: url.parse(link.href, {parseQueryString: true}).query.token,
-            payment_id: payment.id,
-            details: {
-                name: "anikan",
-                email: "anikan@tatooine.org",
-            }
-        });
         calendar.addLock(calendar.auth, {
             start:   utils.momentToCalendarDate(moment()),
             end:     utils.momentToCalendarDate(moment().add(2, 'hours')),
-            summary: 'venue',
-            description: desc,
+            summary: 'football_field',
+            description: JSON.stringify({
+                token: info.token,
+                payment_id: payment.id,
+                details: {
+                    name: "anikan",
+                    phone_number: "123123",
+                }
+            }),
         }, (err) => {
-            if (err) {
-                console.error(err);
-                res.status(500);
-                return;
-            }
-            res.redirect(link.href);
-        })
+            if (err) throw err;
+            res.redirect(info.redirect);
+        });
     });
 });
 

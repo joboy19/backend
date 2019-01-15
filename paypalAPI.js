@@ -1,5 +1,16 @@
+const url = require('url');
 const paypal = require('paypal-rest-sdk');
 paypal.configure(require('./keys/paypal.json'));
+
+
+function get_payment_details(payment) {
+    const redirect = payment.links.find(link => link.rel == 'approval_url').href;
+    const token = url.parse(redirect, {parseQueryString: true}).query.token;
+    return {
+        redirect,
+        token,
+    };
+}
 
 
 function create_payment(name, price, callback) {
@@ -31,7 +42,10 @@ function create_payment(name, price, callback) {
                 total: price,
             },
         }]
-    }, callback);
+    }, (err, payment) => {
+        if (err) return callback(err);
+        callback(err, payment, get_payment_details(payment));
+    });
 }
 
 
