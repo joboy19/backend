@@ -19,6 +19,7 @@ router.post('/', (req, res) => {
     // TODO: check duration here and also closing times
     if (!start.isAfter(moment())
         || !end.isAfter(start)
+        || end.diff(start, 'days') > 0
         || !details.name
         || !details.phone_number
         || !venue
