@@ -35,8 +35,10 @@ function connect() {
     return jwtClient;
 }
 
-//auth is the jwtClient object returned by connect()
-//resource can have start, end, summary, description and id
+// auth is the jwtClient object returned by connect()
+// resource can have start, end, summary, description and id
+// start and end should be like:
+//   { dateTime: 'string', timeZone: 'string' }
 function addLock(auth, resource, callback) {
     addSlot(PAYPAL_ID, auth, resource, callback);
 }
@@ -64,7 +66,7 @@ function deleteSlot(calendarId, auth, eventId, callback) {
 
 
 function findLock(auth, query, callback) {
-    const og = query.predicate;
+    const og = query.predicate || () => true;
     const timeout = moment().subtract(15, 'minutes');
     query.predicate = (event) =>
         moment(event.updated).isAfter(timeout) &&
@@ -74,6 +76,7 @@ function findLock(auth, query, callback) {
 
 
 function findFirst(calendarId, auth, query, callback) {
+    query.predicate = query.predicate || () => true;
     return calendar.events.list({
         calendarId,
         auth,

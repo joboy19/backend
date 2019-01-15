@@ -1,5 +1,8 @@
+const moment = require('moment');
 const router = require('express').Router();
-const utils = require('../utils.js');
+const utils = require('../utils');
+const calendar = require('../calendarAPI');
+const paypal = require('../paypalAPI');
 
 
 router.post('/', (req, res) => {
@@ -10,46 +13,57 @@ router.post('/', (req, res) => {
         name:  req.body.name,
         phone_number: req.body.phone_number,
     };
+
     // sanity checks
-    if (!end.isAfter(start) || !details.name || !details.phone_number || !venue) {
+    // TODO: check duration here and also closing times
+    if (!start.isAfter(moment())
+        || !end.isAfter(start)
+        || !details.name
+        || !details.phone_number
+        || !venue
+        || !calendar.ids[venue]) {
         res.status(400).end();
         return;
     }
+
+    const duration = moment.duration(end.diff(start)).hours();
+    const price = (10 * duration).toString() + ".00";
+
+    const start_date = utils.momentToCalendarDate(start);
+    const end_date   = utils.momentToCalendarDate(end);
+
     // check first if someone else is trying to book
     // the same slot.
     calendar.findLock(calendar.auth, {
-        start: utils.momentToCalendarDate(start),
-        end:   utils.momentToCalendarDate(end),
+        start: start_date,
+        end:   end_date,
         predicate: (event) => event.summary === venue,
     }, (err, event) => {
         if (err) throw err;
         if (event) {
-            console.log("Event taken");
             res.status(400).end();
             return;
         }
         // now check if there is a booking in place
         calendar.findFirst(calendar.ids[venue], calendar.auth, {
-            start: utils.momentToCalendarDate(start),
-            end:   utils.momentToCalendarDate(end),
-            predicate: () => true,
+            start: start_date,
+            end:   end_date,
         }, (err, event) => {
             if (err) throw err;
             if (event) return res.status(400).end();
             // ok, lock + redirect to payment
-            // TODO: fix prices
-            paypal.create_payment(venue, "10.00", (err, payment, info) => {
+            paypal.create_payment(`${venue} (${duration} hours)`, price, (err, payment, info) => {
                 if (err) throw err;
                 calendar.addLock(calendar.auth, {
-                    start:   utils.momentToCalendarDate(start),
-                    end:     utils.momentToCalendarDate(end),
+                    start:   {dateTime: start_date, timeZone: 'Europe/London'},
+                    end:     {dateTime: end_date,   timeZone: 'Europe/London'},
                     summary: venue,
                     description: JSON.stringify({
                         payment_id: payment.id,
                         token:      info.token,
                         details:    details,
                     }),
-                }, (err) => {
+                }, err => {
                     if (err) throw err;
                     res.redirect(info.redirect);
                 });
@@ -57,3 +71,6 @@ router.post('/', (req, res) => {
         });
     });
 });
+
+
+module.exports = router;

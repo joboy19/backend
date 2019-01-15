@@ -2,15 +2,12 @@ const moment = require('moment');
 
 
 function momentToCalendarDate(m) {
-    return {
-        dateTime: (m || moment()).format("YYYY-MM-DDTHH:MM:ssZ"),
-        timeZone: 'Europe/London',
-    };
+    return (m || moment()).utc().toISOString();
 }
 
 
 function clientDateToMoment(s) {
-    const m = moment(s, "YYYY-MM-DDTHH:MM:ssZ");
+    const m = moment.utc(s, "YYYY-MM-DDTHH:mm:ss");
     if (!m.isValid()) {
         throw new Error("invalid date!");
     }
@@ -21,4 +18,5 @@ function clientDateToMoment(s) {
 
 module.exports = {
     momentToCalendarDate,
+    clientDateToMoment,
 };

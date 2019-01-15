@@ -1,8 +1,8 @@
 const moment = require('moment');
 const router = require('express').Router();
-const paypal = require('../paypalAPI.js');
-const calendar = require('../calendarAPI.js');
-const utils = require('../utils.js');
+const paypal = require('../paypalAPI');
+const calendar = require('../calendarAPI');
+const utils = require('../utils');
 
 
 // Paypal Lock schema

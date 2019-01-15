@@ -27,5 +27,6 @@ app.use('/contact-us', require('./routes/contact-us'));
 app.use('/paypal', require('./routes/paypal'));
 app.use('/facilities', require('./routes/facilities'));
 app.use('/whats-on', require('./routes/whats-on'));
+app.use('/booking',  require('./routes/booking'));
 
 app.listen(8080, () => {});
