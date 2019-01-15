@@ -84,7 +84,7 @@ function findFirst(calendarId, auth, query, callback) {
         timeMax: query.end,
     }, (err, res) => {
         if (err) {
-            callback(null, err);
+            callback(err, null);
             return;
         }
         const events = res.data.items;
