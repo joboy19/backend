@@ -6,10 +6,7 @@ const router = require('express').Router();
 
 const transporter = nodemailer.createTransport({
     service: 'gmail',
-    auth: {
-        user: 'durhamredthunder2018@gmail.com',
-        pass: process.env['RED_THUNDER_PASSWORD'],
-    },
+    auth: require('../keys/gmail.json'),
 });
 
 
@@ -27,9 +24,8 @@ ${req.body.query}`
     };
     transporter.sendMail(mailOptions, (error, info) => {
         if (error) {
-            console.log('Error:');
-            console.log(error);
-            return;
+            console.error('SendMail Error:');
+            console.error(error);
         }
     });
     res.redirect('/contact-us');

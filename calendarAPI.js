@@ -46,9 +46,6 @@ function deleteLock(auth, eventId, callback) {
     deleteSlot(PAYPAL_ID, auth, eventId, callback);
 }
 
-function deleteEvent(auth, eventId, callback) {
-    deleteSlot(CALENDAR_ID, auth, eventId, callback);
-}
 
 function deleteSlot(calendarId, auth, eventId, callback) {
     calendar.events.delete({
@@ -56,11 +53,6 @@ function deleteSlot(calendarId, auth, eventId, callback) {
         auth,
         eventId,
     }, callback);
-}
-
-
-function findEvent(auth, query, callback) {
-    return findFirst(CALENDAR_ID, auth, query, callback);
 }
 
 
@@ -95,7 +87,7 @@ module.exports = {
     auth: connect(),
     PAYPAL_ID,
     findLock,
-    findEvent,
+    findFirst,
     addLock,
     deleteLock,
 };
