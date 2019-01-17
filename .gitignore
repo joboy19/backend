@@ -1,4 +1,3 @@
 /node_modules/
 /npm-debug.log
-/keys/privatekey.json
-/keys/paypal.json
+/keys/

@@ -3,7 +3,12 @@ const moment = require('moment');
 const calendar = google.calendar('v3');
 const privatekey = require('./keys/privatekey.json');
 const PAYPAL_ID = '1mlpohc4b7q3ujqvpndg27vna4@group.calendar.google.com'; // paypal calendar
-const CALENDAR_ID  = 'durhamredthunder2018@gmail.com'; // main calendar
+
+
+const IDS = {
+    astro_turf: 'tur9s2qokdfi7rs2056o84hgms@group.calendar.google.com',
+};
+
 
 function connect() {
     let jwtClient = new google.auth.JWT(
@@ -19,17 +24,21 @@ function connect() {
             return;
         }
         console.log('API access authenticated');
+        calendar.calendarList.list({auth: jwtClient}, (a, b) => {
+            console.log(a);
+            b.data.items.forEach(cal => {
+                console.log(cal.id, cal.summary);
+            });
+        });
     });
 
     return jwtClient;
 }
 
-//auth is the jwtClient object returned by connect()
-//resource can have start, end, summary, description and id
-function addEvent(auth, resource, callback) {
-    addSlot(CALENDAR_ID, auth, resource, callback);
-}
-
+// auth is the jwtClient object returned by connect()
+// resource can have start, end, summary, description and id
+// start and end should be like:
+//   { dateTime: 'string', timeZone: 'string' }
 function addLock(auth, resource, callback) {
     addSlot(PAYPAL_ID, auth, resource, callback);
 }
@@ -46,9 +55,6 @@ function deleteLock(auth, eventId, callback) {
     deleteSlot(PAYPAL_ID, auth, eventId, callback);
 }
 
-function deleteEvent(auth, eventId, callback) {
-    deleteSlot(CALENDAR_ID, auth, eventId, callback);
-}
 
 function deleteSlot(calendarId, auth, eventId, callback) {
     calendar.events.delete({
@@ -59,13 +65,8 @@ function deleteSlot(calendarId, auth, eventId, callback) {
 }
 
 
-function findEvent(auth, query, callback) {
-    return findFirst(CALENDAR_ID, auth, query, callback);
-}
-
-
 function findLock(auth, query, callback) {
-    const og = query.predicate;
+    const og = query.predicate || (() => true);
     const timeout = moment().subtract(15, 'minutes');
     query.predicate = (event) =>
         moment(event.updated).isAfter(timeout) &&
@@ -75,6 +76,7 @@ function findLock(auth, query, callback) {
 
 
 function findFirst(calendarId, auth, query, callback) {
+    query.predicate = query.predicate || (() => true);
     return calendar.events.list({
         calendarId,
         auth,
@@ -82,7 +84,7 @@ function findFirst(calendarId, auth, query, callback) {
         timeMax: query.end,
     }, (err, res) => {
         if (err) {
-            callback(null, err);
+            callback(err, null);
             return;
         }
         const events = res.data.items;
@@ -93,9 +95,11 @@ function findFirst(calendarId, auth, query, callback) {
 
 module.exports = {
     auth: connect(),
+    ids: IDS,
     PAYPAL_ID,
     findLock,
-    findEvent,
+    findFirst,
     addLock,
+    addSlot,
     deleteLock,
 };
