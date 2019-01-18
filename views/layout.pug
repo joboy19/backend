@@ -6,6 +6,7 @@ html(lang="en")
         block vars
         title PVCC - #{title}
         link(rel="stylesheet", href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS", crossorigin="anonymous")
+        link(href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.6.1/css/mdb.min.css" rel="stylesheet")
         link(rel='stylesheet', href='/css/style.css')
         script(src='/js/jquery.js')
         script(src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js", integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut", crossorigin="anonymous")
@@ -34,3 +35,29 @@ html(lang="en")
                             button#book-now-button Book Now
         block content
         block footer
+            footer.page-footer.font-small.grey.darken-3.pt-4
+                div.container-fluid.text-center.text-md-left
+                    div.row
+                        hr.clearfix.w-100.d-md-none.pb-3
+
+                        div.col-md-3.mb-md-0.mb-3
+                            h5.text-uppercase Pages
+                            ul.list-unstyled
+                                li
+                                    a(href='/') Home
+                                li
+                                    a(href='/about-us') About Us
+                                li
+                                    a(href='/whats-on') What's On
+                                li
+                                    a(href='/facilities') Facilities
+                                li
+                                    a(href='/contact-us') Contact Us
+
+                        div.col-md-3.mb-md-0.mb-3
+                            h5.text-uppercase Links
+                            ul.list-unstyled
+                                li
+                                    a(href='/gdpr-notice') GDPR Notice
+
+                div(class="footer-copyright text-center py-3") © Copyright 2019 - Park View Community Association
