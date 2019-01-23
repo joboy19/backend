@@ -23,6 +23,7 @@ render_page('/about-us', 'about-us');
 render_page('/contact-us', 'contact-us');
 render_page('/calendar', 'testcalendar');
 render_page('/gdpr-notice', 'gdpr-notice');
+render_page('/book-now', 'book-now');
 app.use('/contact-us', require('./routes/contact-us'));
 app.use('/paypal', require('./routes/paypal'));
 app.use('/facilities', require('./routes/facilities'));

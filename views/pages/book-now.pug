@@ -1,0 +1,63 @@
+extends ../layout.pug
+
+  
+block vars
+  script(src="/js/jquery.js")
+  -var title = "Book Now"
+
+block content
+  div.row
+    div.col-sm-6.mx-auto
+      h1 Book Now
+      form#book-now(method="POST")
+        div.form-group
+          label(form="type") Booking Type
+          select#selectType.form-control
+            option(disabled selected) Please Select
+            option Venue
+            option Activity
+            option Event
+        div#groupVenue(style="display: none;").form-group
+          label(form="type") Venue
+          select#selectVenue.form-control
+            option(disabled selected) Please Select
+        div#groupActivity(style="display: none;").form-group
+          label(form="type") Activity
+          select#selectActivity.form-control
+        div#groupEvent(style="display: none;").form-groupEvent
+          a(form="type" href="/contact-us") For booking events contact us here.
+        div#priceTag(style="display: none;")
+          label#priceTagContent(form="type")
+            
+        div#durationPicker.form-group
+          label(form="type") Duration
+          select#selectDuration.form-control
+            option(value = "00:30") 0 Hours 30 Minutes
+            option(value = "01:00") 1 Hour 00 Minutes
+            option(value = "01:30") 1 Hour 30 Minutes
+            option(value = "02:00") 2 Hours 00 Minutes
+            option(value = "02:30") 2 Hours 30 Minutes
+            option(value = "03:00") 3 Hours 00 Minutes
+        
+        div#groupEvent.form-groupEvent
+            a(form="type" href="/contact-us") For bookings longer than 3 hours, please contact us here.
+
+          
+            
+        div#datePicker.form-group
+          label(form="type") Date
+          input#datePickerInput(type="date").input-group.date
+        div#timeBegin.form-group
+          label(form="type") Start time 
+          select#selectTime.form-control
+        div#button
+          input#submit(type = "submit" value = "Submit").btn.btn-primary
+            
+          
+
+  script(src="/js/book-now.js")
+  
+        
+
+
+block footer
