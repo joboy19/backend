@@ -40,11 +40,8 @@ router.get('/ok', (req, res) => {
             res.end();
             return;
         }
-        console.log(event);
         const desc = JSON.parse(event.description);
         paypal.execute_payment(paymentId, PayerID, (err, payment) => {
-            // delete paypal lock from calendar
-            calendar.deleteLock(calendar.auth, event.id, (err) => err && console.error(err));
             if (err) throw err;
             calendar.addSlot(
                 calendar.ids[event.summary],
@@ -57,7 +54,8 @@ router.get('/ok', (req, res) => {
                 },
                 (err, resource) => {
                     if (err) throw err;
-                    console.log(resource);
+                    // delete paypal lock from calendar
+                    calendar.deleteLock(calendar.auth, event.id, (err) => err && console.error(err));
                     res.write("Payment approved.");
                     res.end();
                 }
@@ -87,30 +85,6 @@ router.get('/cancel', (req, res) => {
         }
         res.write("Payment cancelled");
         res.end();
-    });
-});
-
-
-router.get('/payment-demo', (req, res) => {
-    paypal.create_payment("Sample Item Name", "10.00", (err, payment, info) => {
-        if (err) throw err;
-        console.log(payment);
-        calendar.addLock(calendar.auth, {
-            start:   utils.momentToCalendarDate(moment()),
-            end:     utils.momentToCalendarDate(moment().add(2, 'hours')),
-            summary: 'football_field',
-            description: JSON.stringify({
-                token: info.token,
-                payment_id: payment.id,
-                details: {
-                    name: "anikan",
-                    phone_number: "123123",
-                }
-            }),
-        }, (err) => {
-            if (err) throw err;
-            res.redirect(info.redirect);
-        });
     });
 });
 

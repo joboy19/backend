@@ -30,6 +30,7 @@ router.post('/', (req, res) => {
         return;
     }
 
+    // TODO: price lists
     const duration = moment.duration(end.diff(start)).hours();
     const price = (10 * duration).toString() + ".00";
 
